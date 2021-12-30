@@ -1,0 +1,9 @@
+downloader:
+  sites: [
+    "anicobin"
+  ]
+  titles: [
+    "大正オトメ御伽話",
+    "takt op.Destiny"
+  ]
+  saveRootDirectory: "./tmp"
