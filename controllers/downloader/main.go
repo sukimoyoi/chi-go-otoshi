@@ -17,13 +17,15 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	inputData := &usecases.DownloadInputData{
-		Site:              config.Downloader.Sites[0],
-		Titles:            config.Downloader.Titles,
-		SaveRootDirectory: config.Downloader.SaveRootDirectory,
-	}
+	for _, site := range config.Downloader.Sites {
+		inputData := &usecases.DownloadInputData{
+			Site:              site,
+			Titles:            config.Downloader.Titles,
+			SaveRootDirectory: config.Downloader.SaveRootDirectory,
+		}
 
-	if err := usecases.RegularlyDownloadBus(inputData); err != nil {
-		log.Fatalln(err)
+		if err := usecases.RegularlyDownloadBus(inputData); err != nil {
+			log.Println(err)
+		}
 	}
 }

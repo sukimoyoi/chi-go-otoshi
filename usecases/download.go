@@ -26,6 +26,8 @@ func RegularlyDownloadBus(inputData *DownloadInputData) error {
 	switch inputData.Site {
 	case Anicobin.RootPage.Identifier:
 		downloadTask = Anicobin
+	case Gno.RootPage.Identifier:
+		downloadTask = Gno
 	default:
 		return fmt.Errorf("unsupported site '%s'", inputData.Site)
 	}
@@ -38,16 +40,13 @@ type DownloadInterface interface {
 }
 
 type Download struct {
-	RootPage                 entities.WebPage
-	ArticleSelectorFromRoot  string
-	ImageSelectorFromArticle string
+	RootPage                                entities.WebPage
+	ArticleSelectorFromRoot                 string
+	ImageSelectorFromArticle                string
+	ImageSelectorFromArticleExterUrlPattern string
 	DownloadInterface
 	SaveRepository   SaveRepository
 	CacheRespository CacheRepository
-}
-
-type AnicobinDownload struct {
-	Download
 }
 
 type SaveRepository interface {
@@ -62,26 +61,33 @@ type CacheRepository interface {
 }
 
 var (
-	Anicobin = &AnicobinDownload{
-		Download: Download{
-			RootPage:       entities.NewWebPage("anicobin", "あにこ便", "http://anicobin.ldblog.jp/"),
-			SaveRepository: &gateways.SaveLocalRepository{},
-			CacheRespository: &gateways.CacheFileRepository{
-				CacheFilePath: gateways.CachePath,
-			},
-			ArticleSelectorFromRoot:  "div.autopagerize_page_element > div.top-article-outer > div.top-right > h2.top-article-title > a",
-			ImageSelectorFromArticle: "div.tw_matome > a",
+	Anicobin = &Download{
+		RootPage:       entities.NewWebPage("anicobin", "あにこ便", "http://anicobin.ldblog.jp/"),
+		SaveRepository: &gateways.SaveLocalRepository{},
+		CacheRespository: &gateways.CacheFileRepository{
+			CacheFilePath: gateways.CachePath,
 		},
+		ArticleSelectorFromRoot:  "div.autopagerize_page_element > div.top-article-outer > div.top-right > h2.top-article-title > a",
+		ImageSelectorFromArticle: "div.tw_matome > a",
+	}
+	Gno = &Download{
+		RootPage:       entities.NewWebPage("gno", "アニメと漫画と 連邦 こっそり日記", "https://gno.blog.jp/"),
+		SaveRepository: &gateways.SaveLocalRepository{},
+		CacheRespository: &gateways.CacheFileRepository{
+			CacheFilePath: gateways.CachePath,
+		},
+		ArticleSelectorFromRoot:                 "h1.article-index-title > a",
+		ImageSelectorFromArticle:                "div.article-body-more > a",
+		ImageSelectorFromArticleExterUrlPattern: "livedoor.blogimg",
 	}
 )
 
-func (a *AnicobinDownload) Singularly(page entities.WebPage, saveRootDirectory string) error {
-
+func (d *Download) Singularly(page entities.WebPage, saveRootDirectory string) error {
 	return nil
 }
 
-func (a *AnicobinDownload) Regularly(targetTitles []string, saveRootDirectory string) error {
-	a.CommonRegularly(targetTitles, saveRootDirectory)
+func (d *Download) Regularly(targetTitles []string, saveRootDirectory string) error {
+	d.CommonRegularly(targetTitles, saveRootDirectory)
 	return nil
 }
 
@@ -91,10 +97,10 @@ func (d *Download) CommonRegularly(targetTitles []string, saveRootDirectory stri
 	lastArticleUrl := ""
 	cache, err := d.CacheRespository.Load()
 	if err != nil {
-		fmt.Printf("load cache: '%s'\n", err)
+		log.Printf("load cache: '%s'\n", err)
 	}
 	if cache != nil {
-		lastArticleUrl := cache.GetSiteUrl(d.RootPage.Identifier)
+		lastArticleUrl = cache.GetSiteUrl(d.RootPage.Identifier)
 		log.Printf("last article is '%s'\n", lastArticleUrl)
 	}
 
@@ -208,6 +214,9 @@ func (d *Download) CommonSingularly(page entities.WebPage, saveRootDirectory str
 		}
 		saveUrl, err := baseUrl.Parse(href)
 		if err != nil {
+			return
+		}
+		if !strings.Contains(saveUrl.String(), d.ImageSelectorFromArticleExterUrlPattern) {
 			return
 		}
 		saveUrls = append(saveUrls, saveUrl.String())
