@@ -1,9 +1,11 @@
 downloader:
   sites: [
-    "anicobin"
+    "gno",
+    "anicobin",
   ]
   titles: [
     "大正オトメ御伽話",
-    "takt op.Destiny"
+    "takt op.Destiny",
+    "ガルパ☆ピコ"
   ]
   saveRootDirectory: "./tmp"
