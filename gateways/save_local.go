@@ -9,7 +9,7 @@ import (
 
 type SaveLocalRepository struct{}
 
-func (slr *SaveLocalRepository) CreateFolder(folderPath string) error {
+func (slr *SaveLocalRepository) CreateTitleFolder(folderPath string) error {
 	return os.MkdirAll(folderPath, os.ModePerm)
 }
 
@@ -29,7 +29,7 @@ func (slr *SaveLocalRepository) CreateNumberedFolder(folderParentPath string) (f
 	return folderPath, nil
 }
 
-func (slr *SaveLocalRepository) Save(filePath string, r io.Reader) error {
+func (slr *SaveLocalRepository) SaveFileReader(filePath string, r io.Reader) error {
 	out, err := os.Create(filePath)
 	if err != nil {
 		return err
@@ -38,4 +38,12 @@ func (slr *SaveLocalRepository) Save(filePath string, r io.Reader) error {
 
 	_, err = io.Copy(out, r)
 	return err
+}
+
+func (slr *SaveLocalRepository) ReadFile(filePath, str string) ([]byte, error) {
+	bytes, err := os.ReadFile(filePath)
+	if err != nil {
+		return nil, err
+	}
+	return bytes, nil
 }

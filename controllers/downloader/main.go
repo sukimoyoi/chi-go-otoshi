@@ -9,8 +9,10 @@ import (
 
 func main() {
 
-	cr := gateways.NewConfigRepository("./config.yaml")
-	config, err := cr.ReadFromFile()
+	cr := &gateways.ConfigFileRepository{
+		ConfigFilePath: "./config.yaml",
+	}
+	config, err := cr.Load()
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -21,7 +23,7 @@ func main() {
 		SaveRootDirectory: config.Downloader.SaveRootDirectory,
 	}
 
-	if err := usecases.RegularyDownloadBus(inputData); err != nil {
+	if err := usecases.RegularlyDownloadBus(inputData); err != nil {
 		log.Fatalln(err)
 	}
 }
