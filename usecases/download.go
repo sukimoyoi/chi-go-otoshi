@@ -50,7 +50,7 @@ type Download struct {
 }
 
 type SaveRepository interface {
-	CreateTitleFolder(folderPath string) error
+	CreateFolder(folderPath string) error
 	CreateNumberedFolder(folderParentPath string) (folderPath string, err error)
 	SaveFileReader(filePath string, r io.Reader) error
 }
@@ -224,7 +224,7 @@ func (d *Download) CommonSingularly(page entities.WebPage, saveRootDirectory str
 	})
 
 	titleFolderPath := filepath.Join(saveRootDirectory, page.Identifier)
-	if err := d.SaveRepository.CreateTitleFolder(titleFolderPath); err != nil {
+	if err := d.SaveRepository.CreateFolder(titleFolderPath); err != nil {
 		return fmt.Errorf("create folder '%s': %w", titleFolderPath, err)
 	}
 

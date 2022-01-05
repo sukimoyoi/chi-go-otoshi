@@ -9,7 +9,7 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-var CachePath string = ".chi-go-otocshi.cache.yaml"
+var CachePath string = ".chi_go_otocshi.cache.yaml"
 
 type CacheFileRepository struct {
 	CacheFilePath string

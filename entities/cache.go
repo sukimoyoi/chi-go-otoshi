@@ -19,7 +19,7 @@ func (data *CacheData) GetSiteUrl(site string) string {
 }
 
 func (data *CacheData) SetSiteUrl(site, url string) {
-	for i, _ := range data.LastArticles {
+	for i := range data.LastArticles {
 		if data.LastArticles[i].Site == site {
 			data.LastArticles[i].URL = url
 		}
