@@ -9,7 +9,7 @@ import (
 
 type SaveLocalRepository struct{}
 
-func (slr *SaveLocalRepository) CreateTitleFolder(folderPath string) error {
+func (slr *SaveLocalRepository) CreateFolder(folderPath string) error {
 	return os.MkdirAll(folderPath, os.ModePerm)
 }
 
