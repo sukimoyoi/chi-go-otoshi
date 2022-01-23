@@ -11,7 +11,7 @@ import (
 	"github.com/sukimoyoi/chi-go-otoshi/usecases/mock_usecases"
 )
 
-func TestRegularlyDownload(t *testing.T) {
+func TestFromRootPageDownload(t *testing.T) {
 	c := gomock.NewController(t)
 	defer c.Finish()
 
@@ -47,7 +47,7 @@ func TestRegularlyDownload(t *testing.T) {
 		setupMock func(*mock_usecases.MockSaveRepository, *mock_usecases.MockCacheRepository)
 	}{
 		{
-			name:   "regularly download one title",
+			name:   "from-root-page download one title",
 			titles: []string{"大正オトメ御伽話"},
 			setupMock: func(msr *mock_usecases.MockSaveRepository, mcr *mock_usecases.MockCacheRepository) {
 				mcr.EXPECT().Load().Return(&entities.CacheData{
@@ -82,7 +82,7 @@ func TestRegularlyDownload(t *testing.T) {
 
 			dl.SaveRepository = saveRepo
 			dl.CacheRespository = cacheRepo
-			if err := dl.Regularly(tc.titles, ""); err != nil {
+			if err := dl.FromRootPage(tc.titles, ""); err != nil {
 				t.Errorf("%w", err)
 			}
 		})

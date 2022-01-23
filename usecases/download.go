@@ -20,7 +20,7 @@ type DownloadInputData struct {
 	SaveRootDirectory string
 }
 
-func RegularlyDownloadBus(inputData *DownloadInputData) error {
+func FromRootPageDownloadBus(inputData *DownloadInputData) error {
 	var downloadTask DownloadInterface
 
 	switch inputData.Site {
@@ -48,12 +48,12 @@ func RegularlyDownloadBus(inputData *DownloadInputData) error {
 	default:
 		return fmt.Errorf("unsupported site '%s'", inputData.Site)
 	}
-	return downloadTask.Regularly(inputData.Titles, inputData.SaveRootDirectory)
+	return downloadTask.FromRootPage(inputData.Titles, inputData.SaveRootDirectory)
 }
 
 type DownloadInterface interface {
-	Singularly(page entities.WebPage, saveRootDirectory string) error
-	Regularly(targetTitles []string, saveRootDirectory string) error
+	SinglePage(page entities.WebPage, saveRootDirectory string) error
+	FromRootPage(targetTitles []string, saveRootDirectory string) error
 }
 
 type Download struct {
@@ -77,17 +77,17 @@ type CacheRepository interface {
 	Save(*entities.CacheData) error
 }
 
-func (d *Download) Singularly(page entities.WebPage, saveRootDirectory string) error {
+func (d *Download) SinglePage(page entities.WebPage, saveRootDirectory string) error {
 	return nil
 }
 
-func (d *Download) Regularly(targetTitles []string, saveRootDirectory string) error {
-	d.CommonRegularly(targetTitles, saveRootDirectory)
+func (d *Download) FromRootPage(targetTitles []string, saveRootDirectory string) error {
+	d.CommonFromRootPage(targetTitles, saveRootDirectory)
 	return nil
 }
 
-func (d *Download) CommonRegularly(targetTitles []string, saveRootDirectory string) error {
-	log.Printf("start regularly donwnload images on '%s'\n", d.RootPage.PrintName)
+func (d *Download) CommonFromRootPage(targetTitles []string, saveRootDirectory string) error {
+	log.Printf("start from-root-page donwnload images on '%s'\n", d.RootPage.PrintName)
 
 	lastArticleUrl := ""
 	cache, err := d.CacheRespository.Load()
@@ -153,8 +153,8 @@ func (d *Download) CommonRegularly(targetTitles []string, saveRootDirectory stri
 	})
 
 	for _, ap := range articlePages {
-		if err := d.CommonSingularly(ap, saveRootDirectory); err != nil {
-			return fmt.Errorf("download singularly: %w", err)
+		if err := d.CommonSinglePage(ap, saveRootDirectory); err != nil {
+			return fmt.Errorf("download single-page: %w", err)
 		}
 	}
 
@@ -182,7 +182,7 @@ func (d *Download) CommonRegularly(targetTitles []string, saveRootDirectory stri
 	return nil
 }
 
-func (d *Download) CommonSingularly(page entities.WebPage, saveRootDirectory string) error {
+func (d *Download) CommonSinglePage(page entities.WebPage, saveRootDirectory string) error {
 	log.Printf("download images from '%s' (%s)\n", page.PrintName, page.URL)
 
 	baseUrl, err := url.Parse(page.URL)

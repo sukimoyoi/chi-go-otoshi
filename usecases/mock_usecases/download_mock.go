@@ -34,32 +34,32 @@ func (m *MockDownloadInterface) EXPECT() *MockDownloadInterfaceMockRecorder {
 	return m.recorder
 }
 
-// Singularly mocks base method
-func (m *MockDownloadInterface) Singularly(page entities.WebPage, saveRootDirectory string) error {
+// SinglePage mocks base method
+func (m *MockDownloadInterface) SinglePage(page entities.WebPage, saveRootDirectory string) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Singularly", page, saveRootDirectory)
+	ret := m.ctrl.Call(m, "SinglePage", page, saveRootDirectory)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// Singularly indicates an expected call of Singularly
-func (mr *MockDownloadInterfaceMockRecorder) Singularly(page, saveRootDirectory interface{}) *gomock.Call {
+// SinglePage indicates an expected call of SinglePage
+func (mr *MockDownloadInterfaceMockRecorder) SinglePage(page, saveRootDirectory interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Singularly", reflect.TypeOf((*MockDownloadInterface)(nil).Singularly), page, saveRootDirectory)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SinglePage", reflect.TypeOf((*MockDownloadInterface)(nil).SinglePage), page, saveRootDirectory)
 }
 
-// Regularly mocks base method
-func (m *MockDownloadInterface) Regularly(targetTitles []string, saveRootDirectory string) error {
+// FromRootPage mocks base method
+func (m *MockDownloadInterface) FromRootPage(targetTitles []string, saveRootDirectory string) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Regularly", targetTitles, saveRootDirectory)
+	ret := m.ctrl.Call(m, "FromRootPage", targetTitles, saveRootDirectory)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// Regularly indicates an expected call of Regularly
-func (mr *MockDownloadInterfaceMockRecorder) Regularly(targetTitles, saveRootDirectory interface{}) *gomock.Call {
+// FromRootPage indicates an expected call of FromRootPage
+func (mr *MockDownloadInterfaceMockRecorder) FromRootPage(targetTitles, saveRootDirectory interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Regularly", reflect.TypeOf((*MockDownloadInterface)(nil).Regularly), targetTitles, saveRootDirectory)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FromRootPage", reflect.TypeOf((*MockDownloadInterface)(nil).FromRootPage), targetTitles, saveRootDirectory)
 }
 
 // MockSaveRepository is a mock of SaveRepository interface
