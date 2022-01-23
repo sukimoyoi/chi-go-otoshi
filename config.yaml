@@ -4,8 +4,7 @@ downloader:
     "anicobin",
   ]
   titles: [
-    "大正オトメ御伽話",
-    "takt op.Destiny",
-    "ガルパ☆ピコ"
+    "ガルパ☆ピコ",
+    "ジョジョ"
   ]
   saveRootDirectory: "./tmp"

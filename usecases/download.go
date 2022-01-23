@@ -24,10 +24,27 @@ func RegularlyDownloadBus(inputData *DownloadInputData) error {
 	var downloadTask DownloadInterface
 
 	switch inputData.Site {
-	case Anicobin.RootPage.Identifier:
-		downloadTask = Anicobin
-	case Gno.RootPage.Identifier:
-		downloadTask = Gno
+	case "anicobin":
+		downloadTask = &Download{
+			RootPage:       entities.NewWebPage(inputData.Site, "あにこ便", "http://anicobin.ldblog.jp/"),
+			SaveRepository: &gateways.SaveLocalRepository{},
+			CacheRespository: &gateways.CacheFileRepository{
+				CacheFilePath: gateways.CachePath,
+			},
+			ArticleSelectorFromRoot:  "div.autopagerize_page_element > div.top-article-outer > div.top-right > h2.top-article-title > a",
+			ImageSelectorFromArticle: "div.tw_matome > a",
+		}
+	case "gno":
+		downloadTask = &Download{
+			RootPage:       entities.NewWebPage(inputData.Site, "アニメと漫画と 連邦 こっそり日記", "https://gno.blog.jp/"),
+			SaveRepository: &gateways.SaveLocalRepository{},
+			CacheRespository: &gateways.CacheFileRepository{
+				CacheFilePath: gateways.CachePath,
+			},
+			ArticleSelectorFromRoot:                 "h1.article-index-title > a",
+			ImageSelectorFromArticle:                "div.article-body-more > a",
+			ImageSelectorFromArticleExterUrlPattern: "livedoor.blogimg",
+		}
 	default:
 		return fmt.Errorf("unsupported site '%s'", inputData.Site)
 	}
@@ -59,28 +76,6 @@ type CacheRepository interface {
 	Load() (*entities.CacheData, error)
 	Save(*entities.CacheData) error
 }
-
-var (
-	Anicobin = &Download{
-		RootPage:       entities.NewWebPage("anicobin", "あにこ便", "http://anicobin.ldblog.jp/"),
-		SaveRepository: &gateways.SaveLocalRepository{},
-		CacheRespository: &gateways.CacheFileRepository{
-			CacheFilePath: gateways.CachePath,
-		},
-		ArticleSelectorFromRoot:  "div.autopagerize_page_element > div.top-article-outer > div.top-right > h2.top-article-title > a",
-		ImageSelectorFromArticle: "div.tw_matome > a",
-	}
-	Gno = &Download{
-		RootPage:       entities.NewWebPage("gno", "アニメと漫画と 連邦 こっそり日記", "https://gno.blog.jp/"),
-		SaveRepository: &gateways.SaveLocalRepository{},
-		CacheRespository: &gateways.CacheFileRepository{
-			CacheFilePath: gateways.CachePath,
-		},
-		ArticleSelectorFromRoot:                 "h1.article-index-title > a",
-		ImageSelectorFromArticle:                "div.article-body-more > a",
-		ImageSelectorFromArticleExterUrlPattern: "livedoor.blogimg",
-	}
-)
 
 func (d *Download) Singularly(page entities.WebPage, saveRootDirectory string) error {
 	return nil
